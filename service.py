@@ -74,7 +74,7 @@ async def summarize(request: Request, file: UploadFile = File(...)):
 
     try:
         text = await extract_text_from_file(file)
-        summary = generate_summary(text, model, tokenizer)
+        summary = generate_summary(text, model, tokenizer, max_new_tokens=300)
         key_facts = extract_keyfacts(text)
 
         df_temp = pd.DataFrame({'article': [text], 'generated_summary': [summary]})

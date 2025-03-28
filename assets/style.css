@@ -150,6 +150,13 @@ body {
     font-size: 1.2rem;
 }
 
+.submit-btn:disabled {
+    background: var(--light-gray);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 .alert {
     padding: 1rem;
     border-radius: 8px;
@@ -239,7 +246,83 @@ body {
     font-size: 0.9rem;
 }
 
-/* Responsive design */
+/* Стили для отображения файла */
+.file-preview {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--light);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border: 1px solid var(--light-gray);
+    animation: fadeIn 0.3s ease;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.file-info i {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.file-name {
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--dark);
+}
+
+.file-size {
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+.remove-file-btn {
+    background: none;
+    border: none;
+    color: var(--gray);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: var(--transition);
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-file-btn:hover {
+    background: rgba(247, 37, 133, 0.1);
+    color: var(--error);
+}
+
+.highlight {
+    border-color: var(--accent) !important;
+    background-color: rgba(72, 149, 239, 0.1) !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.submit-btn:not(:disabled):hover {
+    animation: pulse 1.5s infinite;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 1.5rem;
