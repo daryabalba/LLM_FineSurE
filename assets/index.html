@@ -3,46 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Summarization Service</title>
+    <title>AI Text Summarization</title>
     <link rel="stylesheet" href="/assets/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>Text Summarization Service</h1>
+        <header class="header">
+            <h1><i class="fas fa-robot"></i> AI Text Summarization</h1>
+            <p class="subtitle">Upload your document and get an instant AI-powered summary</p>
+        </header>
 
-        <form method="post" enctype="multipart/form-data" action="/summarize" class="upload-form">
-            <p>Upload a PDF or TXT file:</p>
-            <input type="file" name="file" accept=".pdf,.txt" required>
-            <button type="submit">Upload and Summarize</button>
-        </form>
+        <div class="upload-card">
+            <form method="post" enctype="multipart/form-data" action="/summarize" class="upload-form">
+                <div class="file-upload">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag & drop your PDF or TXT file here or</p>
+                    <label for="file-upload-input" class="file-upload-label">
+                        <span>Browse Files</span>
+                        <input id="file-upload-input" type="file" name="file" accept=".pdf,.txt" required>
+                    </label>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-magic"></i> Generate Summary
+                </button>
+            </form>
 
-        {% if error %}
-            <div class="flash-error">
-                <p>{{ error }}</p>
-            </div>
-        {% endif %}
+            {% if error %}
+                <div class="alert error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>{{ error }}</p>
+                </div>
+            {% endif %}
+        </div>
 
         {% if original_text %}
-        <div class="result-section">
-            <h2>Original Text (Preview)</h2>
-            <div class="summary-box">
-                <p>{{ original_text }}</p>
+        <div class="results-section">
+            <div class="original-text card">
+                <h2><i class="fas fa-file-alt"></i> Original Text Preview</h2>
+                <div class="content-box">
+                    <p>{{ original_text }}</p>
+                </div>
             </div>
 
-            <div class="results-container">
-                <div class="summary-column">
-                    <h2>Summary</h2>
-                    <div class="summary-box">
+            <div class="results-grid">
+                <div class="summary-card card">
+                    <h2><i class="fas fa-comment-dots"></i> AI Summary</h2>
+                    <div class="content-box">
                         <p>{{ summary }}</p>
                     </div>
                 </div>
 
-                <div class="facts-column">
-                    <h2>Key Facts</h2>
-                    <div class="facts-box">
+                <div class="keyfacts-card card">
+                    <h2><i class="fas fa-key"></i> Key Facts</h2>
+                    <div class="content-box">
                         <ul>
                             {% for fact in key_facts %}
-                            <li>{{ fact }}</li>
+                            <li><i class="fas fa-check-circle"></i> {{ fact }}</li>
                             {% endfor %}
                         </ul>
                     </div>
@@ -50,6 +68,10 @@
             </div>
         </div>
         {% endif %}
+
+        <footer class="footer">
+            <p>© 2025 AI Text Summarization Service | Made by Darya Balba</p>
+        </footer>
     </div>
 </body>
 </html>
