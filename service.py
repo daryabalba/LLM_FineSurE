@@ -1,38 +1,33 @@
-import start
-from main import generate_summary
-
-
 import os
-from fastapi import FastAPI, UploadFile, File, Form, Request
+from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pathlib import Path
 from PyPDF2 import PdfReader
-import nltk
-import pandas as pd
+from model_utils import load_model_and_tokenizer, generate_summary
 from gigachat_integration import evaluate_summaries, extract_keyfacts
-
-app = FastAPI(title="Text Summarization Service")
-
-BASE_DIR = Path(__file__).parent
-app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
-templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
-
-nltk.download('punkt')
+from config import BASE_DIR, MODEL_DIR
+from start import train_model
+import pandas as pd
+from pathlib import Path
 
 
 def init_application():
-    fastapi_app = FastAPI()
-    model_path = Path(__file__).parent / 'dist' / 'fine_tuned_bart'
-    if not model_path.exists():
-        start.main()
+    fastapi_app = FastAPI(title="Text Summarization Service")
+    if not MODEL_DIR.exists():
+        print("Model not found. Starting training...")
+        train_model()
 
-    return fastapi_app, model
+    print("Loading model...")
+    finetuned_model, finetuned_tokenizer = load_model_and_tokenizer(MODEL_DIR)
+    print("Model loaded successfully")
+    return fastapi_app, finetuned_model, finetuned_tokenizer
 
 
-app, model = init_application()
+app, model, tokenizer = init_application()
 app.mount("/assets", StaticFiles(directory=Path(__file__).parent / "assets"), "assets")
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
 
 def allowed_file(filename: str) -> bool:
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf', 'txt'}
@@ -73,11 +68,10 @@ async def summarize(request: Request, file: UploadFile = File(...)):
 
     try:
         text = await extract_text_from_file(file)
-
-        summary = generate_summary(text)
+        summary = generate_summary(text, model, tokenizer)
         key_facts = extract_keyfacts(text)
 
-        df_temp = pd.DataFrame({'article': text, 'generated_summary': summary})
+        df_temp = pd.DataFrame({'article': [text], 'generated_summary': [summary]})
         summary_evaluation = evaluate_summaries(df_temp)
 
         return templates.TemplateResponse(
@@ -86,17 +80,15 @@ async def summarize(request: Request, file: UploadFile = File(...)):
                 "request": request,
                 "original_text": text[:500] + "..." if len(text) > 500 else text,
                 "summary": summary,
-                "sum_evaluation": summary_evaluation,
+                "sum_evaluation": summary_evaluation.iloc[0].to_dict() if not summary_evaluation.empty else {},
                 "key_facts": key_facts
             }
         )
-
     except Exception as e:
         return templates.TemplateResponse(
             "index.html",
             {"request": request, "error": f"An error occurred: {str(e)}"}
         )
-
 
 if __name__ == "__main__":
     import uvicorn

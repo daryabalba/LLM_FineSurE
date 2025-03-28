@@ -75,3 +75,48 @@ button:hover {
     border-radius: 5px;
     margin: 15px 0;
 }
+
+.results-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.summary-column {
+    flex: 2;
+}
+
+.facts-column {
+    flex: 1;
+}
+
+.facts-box {
+    background: #ffffff;
+    padding: 20px;
+    margin: 15px 0;
+    border-left: 4px solid #2ecc71;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.facts-box ul {
+    padding-left: 20px;
+}
+
+.facts-box li {
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .results-container {
+        flex-direction: column;
+    }
+
+    .summary-column,
+    .facts-column {
+        flex: 1;
+    }
+}

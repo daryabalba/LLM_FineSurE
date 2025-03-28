@@ -2,7 +2,6 @@ datasets==3.2.0
 evaluate==0.4.3
 fastapi==0.115.6
 pandas==2.2.3
-peft==0.14.0
 rouge-score==0.1.2
 scikit-learn==1.6.1
 torch==2.1.2
@@ -11,5 +10,6 @@ transformers==4.48.1
 gigachat==0.1.39.post1
 PyPDF2==3.0.1
 uvicorn==0.34.0
+python-multipart==0.0.20
 
 --extra-index-url https://download.pytorch.org/whl/cpu

@@ -29,15 +29,24 @@
                 <p>{{ original_text }}</p>
             </div>
 
-            <h2>Summary (Based on BART Model)</h2>
-            <div class="summary-box">
-                <p>{{ summary }}</p>
-            </div>
-            <div class="evaluation">
-                <h3>Quality Evaluation</h3>
-                <p>Compression Ratio: {{ summary_evaluation.compression_ratio }}</p>
-                <p>Keyword Coverage: {{ summary_evaluation.keyword_coverage }}</p>
-                <p>Quality Score: {{ summary_evaluation.quality_score }}</p>
+            <div class="results-container">
+                <div class="summary-column">
+                    <h2>Summary</h2>
+                    <div class="summary-box">
+                        <p>{{ summary }}</p>
+                    </div>
+                </div>
+
+                <div class="facts-column">
+                    <h2>Key Facts</h2>
+                    <div class="facts-box">
+                        <ul>
+                            {% for fact in key_facts %}
+                            <li>{{ fact }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
         {% endif %}

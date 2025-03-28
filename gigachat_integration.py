@@ -13,7 +13,7 @@ AUTH_URL = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
 CLIENT_ID = "4e69c9e9-d948-4def-a13a-5611198e1cda"
 CLIENT_SECRET = "NGU2OWM5ZTktZDk0OC00ZGVmLWExM2EtNTYxMTE5OGUxY2RhOmZlNWVmZTBkLTcyN2EtNDFjZS1iZGJlLThiYzBjN2YxMGM2NQ=="
 
-with GigaChat(credentials=CLIENT_SECRET, ca_bundle_file="/content/russian_trusted_root_ca.cer") as giga:
+with GigaChat(credentials=CLIENT_SECRET, ca_bundle_file="russian_trusted_root_ca.cer") as giga:
     access_token = giga.get_token()
 
 

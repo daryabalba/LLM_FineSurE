@@ -1,12 +1,12 @@
 import numpy as np
 import torch
-from evaluate import load
 from datasets import Dataset
+from evaluate import load
 from transformers import (AutoModelForSeq2SeqLM, AutoTokenizer,
-                         DataCollatorForSeq2Seq, Seq2SeqTrainer,
-                         Seq2SeqTrainingArguments)
+                          DataCollatorForSeq2Seq, Seq2SeqTrainer,
+                          Seq2SeqTrainingArguments)
 
-from config import MODEL_DIR, MODEL_NAME
+from config import MODEL_DIR
 
 rouge = load("rouge")
 
