@@ -7,3 +7,6 @@ MODEL_DIR.mkdir(exist_ok=True)
 MODEL_NAME = "facebook/bart-large-cnn"
 MAX_LENGTH = 1000
 MAX_TARGET_LENGTH = 200
+
+GIGACHAT_API_URL = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
+CLIENT_SECRET = "NGU2OWM5ZTktZDk0OC00ZGVmLWExM2EtNTYxMTE5OGUxY2RhOmZlNWVmZTBkLTcyN2EtNDFjZS1iZGJlLThiYzBjN2YxMGM2NQ=="

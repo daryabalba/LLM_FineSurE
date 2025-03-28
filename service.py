@@ -1,15 +1,21 @@
 import os
-from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, UploadFile, File, Request, HTTPException, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from PyPDF2 import PdfReader
 from model_utils import load_model_and_tokenizer, generate_summary
-from gigachat_integration import evaluate_summaries, extract_keyfacts
+from gigachat_integration import start_gigachat, evaluate_summaries, extract_keyfacts
 from config import BASE_DIR, MODEL_DIR
 from start import train_model
 import pandas as pd
 from pathlib import Path
+
+from contextlib import asynccontextmanager
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def init_application():
@@ -26,7 +32,7 @@ def init_application():
 
 app, model, tokenizer = init_application()
 app.mount("/assets", StaticFiles(directory=Path(__file__).parent / "assets"), "assets")
-templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+templates = Jinja2Templates(directory=Path(__file__).parent / "assets")
 
 
 def allowed_file(filename: str) -> bool:

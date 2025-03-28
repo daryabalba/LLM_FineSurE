@@ -108,15 +108,3 @@ button:hover {
     margin-bottom: 10px;
     line-height: 1.4;
 }
-
-/* Адаптивность для мобильных устройств */
-@media (max-width: 768px) {
-    .results-container {
-        flex-direction: column;
-    }
-
-    .summary-column,
-    .facts-column {
-        flex: 1;
-    }
-}

@@ -6,15 +6,30 @@ import time
 from gigachat import GigaChat
 import re
 from typing import List
+from config import GIGACHAT_API_URL, CLIENT_SECRET
 
 
-GIGACHAT_API_URL = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
-AUTH_URL = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
-CLIENT_ID = "4e69c9e9-d948-4def-a13a-5611198e1cda"
-CLIENT_SECRET = "NGU2OWM5ZTktZDk0OC00ZGVmLWExM2EtNTYxMTE5OGUxY2RhOmZlNWVmZTBkLTcyN2EtNDFjZS1iZGJlLThiYzBjN2YxMGM2NQ=="
+def start_gigachat():
+    with GigaChat(credentials=CLIENT_SECRET, ca_bundle_file="russian_trusted_root_ca.cer") as giga:
+        access_token = giga.get_token()
 
-with GigaChat(credentials=CLIENT_SECRET, ca_bundle_file="russian_trusted_root_ca.cer") as giga:
-    access_token = giga.get_token()
+    url = "https://gigachat.devices.sberbank.ru/api/v1/models"
+    payload = {}
+    headers = {
+      'Accept': 'application/json',
+      'Authorization': f'Bearer {access_token.access_token}'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload, verify='russian_trusted_root_ca.cer')
+
+    if response.text:
+        print("Response obtained, everything's fine")
+        return access_token
+    else:
+        return
+
+
+access_token = start_gigachat()
 
 
 def extract_json_from_response(response: str):
@@ -41,7 +56,7 @@ def extract_json_from_response(response: str):
         return None
 
 
-def extract_keyfacts(article: str) -> List[str]: # функция для извлечения ключевых фактов
+def extract_keyfacts(article: str) -> List[str]:  # функция для извлечения ключевых фактов
     prompt = f"""Extract 3-5 key facts from this article. Return ONLY a JSON array with facts:
 
     Article: {article}
@@ -59,7 +74,7 @@ def extract_keyfacts(article: str) -> List[str]: # функция для изв�
         return []
 
 
-def evaluate_faithfulness(article: str, summary: str) -> float: # функция для оценки фактической точности
+def evaluate_faithfulness(article: str, summary: str) -> float:  # функция для оценки фактической точности
     prompt = f"""Analyze factual consistency between article and summary. Return ONLY a JSON file with this exact structure:
     {{
         "analysis": [
@@ -174,7 +189,7 @@ def query_gigachat(prompt: str, temperature: float = 0.3) -> str:
             GIGACHAT_API_URL,
             headers=headers,
             json=payload,
-            verify='/content/russian_trusted_root_ca.cer'
+            verify='russian_trusted_root_ca.cer'
         )
         response.raise_for_status()
 
@@ -190,21 +205,6 @@ def query_gigachat(prompt: str, temperature: float = 0.3) -> str:
         print(f"API Error: {e}")
         return ""
 
-
-def main():
-    url = "https://gigachat.devices.sberbank.ru/api/v1/models"
-    payload={}
-    headers = {
-      'Accept': 'application/json',
-      'Authorization': f'Bearer {access_token.access_token}'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload, verify='/content/russian_trusted_root_ca.cer') # эксплицитно добавила сертификат, потому что он его иначе не видел, а если использовать False, то он плохо работает
-
-    if response.text:
-        print("Response obtained, everything's fine")
-    else:
-        return
 
 
 
