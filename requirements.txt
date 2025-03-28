@@ -9,5 +9,7 @@ torch==2.1.2
 torchinfo==1.8.0
 transformers==4.48.1
 gigachat==0.1.39.post1
+PyPDF2==3.0.1
+uvicorn==0.34.0
 
 --extra-index-url https://download.pytorch.org/whl/cpu

@@ -3,7 +3,6 @@ import pandas as pd
 import json
 from tqdm import tqdm
 import time
-from typing import List, Dict
 from gigachat import GigaChat
 import re
 from typing import List
@@ -55,6 +54,7 @@ def extract_keyfacts(article: str) -> List[str]: # функция для изв�
     response = query_gigachat(prompt)
     try:
         return json.loads(response)
+
     except:
         return []
 
@@ -91,7 +91,7 @@ def evaluate_faithfulness(article: str, summary: str) -> float: # функция
         return 0.0
 
 
-def evaluate_coverage(article: str, summary: str) -> float: # функция для оценки покрытия
+def evaluate_coverage(article: str, summary: str) -> float:
     keyfacts = extract_keyfacts(article)
     if not keyfacts:
         return 0.0

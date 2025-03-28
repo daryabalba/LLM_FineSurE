@@ -1,30 +1,26 @@
+from main import generate_summary
+
+
 import os
 from fastapi import FastAPI, UploadFile, File, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from typing import Optional
 from pathlib import Path
 from PyPDF2 import PdfReader
 import nltk
-from main import generate_summary
 import pandas as pd
 from gigachat_integration import evaluate_summaries, extract_keyfacts
 
-
-# Инициализация приложения
 app = FastAPI(title="Text Summarization Service")
 
-# Настройка путей
 BASE_DIR = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
-# Скачиваем необходимые данные для nltk
 nltk.download('punkt')
 
 
-# Функции для работы с файлами
 def allowed_file(filename: str) -> bool:
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf', 'txt'}
 
@@ -66,22 +62,22 @@ async def summarize(request: Request, file: UploadFile = File(...)):
         text = await extract_text_from_file(file)
 
         summary = generate_summary(text)
+        key_facts = extract_keyfacts(text)
 
         df_temp = pd.DataFrame({'article': text, 'generated_summary': summary})
-        # Оценка качества
-
+        summary_evaluation = evaluate_summaries(df_temp)
 
         return templates.TemplateResponse(
             "index.html",
             {
                 "request": request,
                 "original_text": text[:500] + "..." if len(text) > 500 else text,
-                "sumy_summary": sumy_summary,
-                "transformer_summary": transformer_summary,
-                "sumy_evaluation": sumy_evaluation,
-                "transformer_evaluation": transformer_evaluation
+                "summary": summary,
+                "sum_evaluation": summary_evaluation,
+                "key_facts": key_facts
             }
         )
+
     except Exception as e:
         return templates.TemplateResponse(
             "index.html",

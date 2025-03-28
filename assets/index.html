@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarization Service</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Text Summarization Service</h1>
+
+        <form method="post" enctype="multipart/form-data" action="/summarize" class="upload-form">
+            <p>Upload a PDF or TXT file:</p>
+            <input type="file" name="file" accept=".pdf,.txt" required>
+            <button type="submit">Upload and Summarize</button>
+        </form>
+
+        {% if error %}
+            <div class="flash-error">
+                <p>{{ error }}</p>
+            </div>
+        {% endif %}
+
+        {% if original_text %}
+        <div class="result-section">
+            <h2>Original Text (Preview)</h2>
+            <div class="summary-box">
+                <p>{{ original_text }}</p>
+            </div>
+
+            <h2>Summary (Based on BART Model)</h2>
+            <div class="summary-box">
+                <p>{{ summary }}</p>
+            </div>
+            <div class="evaluation">
+                <h3>Quality Evaluation</h3>
+                <p>Compression Ratio: {{ summary_evaluation.compression_ratio }}</p>
+                <p>Keyword Coverage: {{ summary_evaluation.keyword_coverage }}</p>
+                <p>Quality Score: {{ summary_evaluation.quality_score }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
