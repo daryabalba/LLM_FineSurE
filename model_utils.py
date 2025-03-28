@@ -3,8 +3,10 @@ import torch
 from evaluate import load
 from datasets import Dataset
 from transformers import (AutoModelForSeq2SeqLM, AutoTokenizer,
-                          DataCollatorForSeq2Seq, Seq2SeqTrainer,
-                          Seq2SeqTrainingArguments)
+                         DataCollatorForSeq2Seq, Seq2SeqTrainer,
+                         Seq2SeqTrainingArguments)
+
+from config import MODEL_DIR, MODEL_NAME
 
 rouge = load("rouge")
 
@@ -76,7 +78,7 @@ def create_data_collator(tokenizer, model, padding=True):
 
 def create_trainer(model, dataset, data_collator, tokenizer, num_train_epochs=5):
     training_args = Seq2SeqTrainingArguments(
-        output_dir="./results",
+        output_dir=str(MODEL_DIR),
         evaluation_strategy="epoch",
         learning_rate=3e-5,
         per_device_train_batch_size=4,
@@ -103,10 +105,16 @@ def create_trainer(model, dataset, data_collator, tokenizer, num_train_epochs=5)
         eval_dataset=dataset['validation'],
         data_collator=data_collator,
         tokenizer=tokenizer,
-        compute_metrics=compute_metrics
+        compute_metrics=lambda x: compute_metrics(x, tokenizer)
     )
 
     return trainer
+
+
+def load_model_and_tokenizer(model_path):
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
+    return model, tokenizer
 
 
 def generate_summary(text, model, tokenizer, max_input_length=1024, max_new_tokens=100):

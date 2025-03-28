@@ -1,3 +1,4 @@
+import start
 from main import generate_summary
 
 
@@ -20,6 +21,18 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 nltk.download('punkt')
 
+
+def init_application():
+    fastapi_app = FastAPI()
+    model_path = Path(__file__).parent / 'dist' / 'fine_tuned_bart'
+    if not model_path.exists():
+        start.main()
+
+    return fastapi_app, model
+
+
+app, model = init_application()
+app.mount("/assets", StaticFiles(directory=Path(__file__).parent / "assets"), "assets")
 
 def allowed_file(filename: str) -> bool:
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf', 'txt'}
