@@ -1,0 +1,12 @@
+datasets==3.2.0
+evaluate==0.4.3
+fastapi==0.115.6
+pandas==2.2.3
+peft==0.14.0
+rouge-score==0.1.2
+scikit-learn==1.6.1
+torch==2.1.2
+torchinfo==1.8.0
+transformers==4.48.1
+
+--extra-index-url https://download.pytorch.org/whl/cpu
