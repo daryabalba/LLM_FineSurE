@@ -1,14 +1,12 @@
-import torch
-from transformers import (
-    AutoTokenizer,
-    AutoModelForSeq2SeqLM,
-    Seq2SeqTrainingArguments,
-    Seq2SeqTrainer,
-    DataCollatorForSeq2Seq
-)
-from datasets import Dataset
-
 import numpy as np
+import torch
+from evaluate import load
+from datasets import Dataset
+from transformers import (AutoModelForSeq2SeqLM, AutoTokenizer,
+                          DataCollatorForSeq2Seq, Seq2SeqTrainer,
+                          Seq2SeqTrainingArguments)
+
+rouge = load("rouge")
 
 
 def load_data(df):
@@ -53,7 +51,7 @@ def tokenize_dataset(dataset, tokenizer, max_length, max_target_length):
     )
 
 
-def compute_metrics(eval_pred, tokenizer, rouge):
+def compute_metrics(eval_pred, tokenizer):
     predictions, labels = eval_pred
     decoded_preds = tokenizer.batch_decode(predictions, skip_special_tokens=True)
 
@@ -85,7 +83,7 @@ def create_trainer(model, dataset, data_collator, tokenizer, num_train_epochs=5)
         per_device_eval_batch_size=4,
         weight_decay=0.01,
         save_total_limit=3,
-        num_train_epochs=5,
+        num_train_epochs=num_train_epochs,
         predict_with_generate=True,
         fp16=torch.cuda.is_available(),
         logging_dir="./logs",
@@ -109,3 +107,22 @@ def create_trainer(model, dataset, data_collator, tokenizer, num_train_epochs=5)
     )
 
     return trainer
+
+
+def generate_summary(text, model, tokenizer, max_input_length=1024, max_new_tokens=100):
+    inputs = tokenizer(
+        text,
+        padding="max_length",
+        truncation=True,
+        max_length=max_input_length,
+        return_tensors="pt"
+    ).to(model.device)
+
+    outputs = model.generate(
+        **inputs,
+        max_new_tokens=max_new_tokens,
+        num_beams=4,
+        early_stopping=True
+    )
+
+    return tokenizer.decode(outputs[0], skip_special_tokens=True)
