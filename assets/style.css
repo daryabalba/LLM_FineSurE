@@ -246,7 +246,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* Стили для отображения файла */
 .file-preview {
     display: none;
     align-items: center;
@@ -308,6 +307,50 @@ body {
     background-color: rgba(72, 149, 239, 0.1) !important;
 }
 
+.model-evaluation {
+    margin-top: 2rem;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.metric {
+    background: rgba(72, 149, 239, 0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.metric:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.no-metrics {
+    text-align: center;
+    color: var(--gray);
+    font-style: italic;
+    padding: 1rem;
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -327,20 +370,32 @@ body {
     .container {
         padding: 1.5rem;
     }
-    
+
     .header h1 {
         font-size: 2rem;
     }
-    
+
     .results-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .upload-card {
         padding: 1.5rem;
     }
-    
+
     .file-upload {
         padding: 2rem 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 400px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
     }
 }

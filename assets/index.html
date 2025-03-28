@@ -80,11 +80,29 @@
                     </div>
                 </div>
             </div>
+
+            <div class="model-evaluation card">
+                <h2><i class="fas fa-chart-line"></i> Model Evaluation</h2>
+                <div class="metrics-grid">
+                    {% if sum_evaluation %}
+                    <div class="metric">
+                        <div class="metric-value">{{ "%.2f"|format(sum_evaluation.generated_faithfulness * 100) }}%</div>
+                        <div class="metric-label">Faithfulness Score</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">{{ "%.2f"|format(sum_evaluation.generated_coverage * 100) }}%</div>
+                        <div class="metric-label">Coverage Score</div>
+                    </div>
+                    {% else %}
+                    <div class="no-metrics">Evaluation metrics not available</div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
         {% endif %}
 
         <footer class="footer">
-            <p>© 2025 AI Text Summarization Service | Made by Darya Balba </p>
+            <p>© 2025 AI Text Summarization Service | Made by Darya Balba</p>
         </footer>
     </div>
 
